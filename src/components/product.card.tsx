@@ -10,11 +10,11 @@ interface ProductCardProps {
 
 export function ProductCard({ title, image, knownAs, deliveredAs, className = "" }: ProductCardProps) {
   return (
-    <div className={`bg-white rounded-lg shadow-sm overflow-hidden ${className}`}>
+    <div className={`bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow ${className}`}>
       <div className="flex flex-col md:flex-row">
         {/* Product Image */}
         <div className="md:w-1/3 h-48 md:h-auto relative">
-          <Image src={image || "/placeholder.svg"} alt={title} fill className="object-cover" />
+          <Image src={image || "/placeholder.svg?height=200&width=300"} alt={title} fill className="object-cover" />
         </div>
 
         {/* Product Information */}
