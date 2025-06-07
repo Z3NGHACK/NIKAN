@@ -1,12 +1,9 @@
 import { Footer } from "@/components/footer"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { ContactForm } from "@/components/contact-form"
 
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-white">
-
       {/* Hero Section */}
       <section
         className="py-20 bg-slate-900 bg-cover bg-center h-60"
@@ -43,7 +40,7 @@ export default function ContactPage() {
                   <div className="w-6 h-6 text-blue-600 mt-1 flex items-center justify-center">✉️</div>
                   <div>
                     <h3 className="font-semibold text-slate-800 mb-1">Email</h3>
-                    <p className="text-gray-700">nikantrading-jp@gmail.com</p>
+                    <p className="text-gray-700">zenghack1@gmail.com</p>
                   </div>
                 </div>
 
@@ -69,69 +66,7 @@ export default function ContactPage() {
             {/* Contact Form */}
             <div className="bg-white p-8 rounded-lg shadow-sm animate-in fade-in-0 slide-in-from-right-6 duration-1000 delay-500">
               <h3 className="text-2xl font-light text-blue-700 mb-6">Send us a message</h3>
-
-              <form className="space-y-6">
-                <div className="animate-in fade-in-0 slide-in-from-bottom-6 duration-1000 delay-700">
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                    Full Name *
-                  </label>
-                  <Input
-                    id="name"
-                    name="name"
-                    type="text"
-                    required
-                    className="w-full transition-all duration-300 focus:scale-105"
-                  />
-                </div>
-
-                <div className="animate-in fade-in-0 slide-in-from-bottom-6 duration-1000 delay-800">
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address *
-                  </label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    className="w-full transition-all duration-300 focus:scale-105"
-                  />
-                </div>
-
-                <div className="animate-in fade-in-0 slide-in-from-bottom-6 duration-1000 delay-900">
-                  <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
-                    Company Name
-                  </label>
-                  <Input
-                    id="company"
-                    name="company"
-                    type="text"
-                    className="w-full transition-all duration-300 focus:scale-105"
-                  />
-                </div>
-
-                <div className="animate-in fade-in-0 slide-in-from-bottom-6 duration-1000 delay-1000">
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                    Message *
-                  </label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    required
-                    rows={5}
-                    className="w-full transition-all duration-300 focus:scale-105"
-                    placeholder="Tell us about your requirements..."
-                  />
-                </div>
-
-                <div className="animate-in fade-in-0 slide-in-from-bottom-6 duration-1000 delay-1100">
-                  <Button
-                    type="submit"
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 transform hover:scale-105 transition-all duration-300 hover:shadow-lg"
-                  >
-                    Send Message
-                  </Button>
-                </div>
-              </form>
+              <ContactForm />
             </div>
           </div>
         </div>
