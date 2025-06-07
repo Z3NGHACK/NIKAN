@@ -22,7 +22,7 @@ export default function HomePage() {
         <div className="relative z-10 container mx-auto px-4">
           <div className="max-w-4xl animate-in slide-in-from-left-10 duration-1000 delay-300">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-light text-white mb-8 leading-tight animate-in fade-in-0 slide-in-from-bottom-6 duration-1000 delay-500">
-              Trusted. Sustainable. Global.
+              Trusted. Sustainable. Global. 
             </h1>
             <p className="text-lg md:text-xl text-gray-200 leading-relaxed mb-8 max-w-3xl animate-in fade-in-0 slide-in-from-bottom-6 duration-1000 delay-700">
               Nikan specializes in the international trade of aluminum scrap, used machinery, and recyclable materials.
