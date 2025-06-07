@@ -14,6 +14,7 @@ export function ContactForm() {
     message: string
     type: "success" | "error" | ""
     details?: string
+    emailSent?: boolean
   }>({ message: "", type: "" })
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -71,6 +72,7 @@ export function ContactForm() {
               ? "Email sent + confirmation sent"
               : "Email sent successfully"
             : "Message logged for manual follow-up",
+          emailSent: data.emailSent, // Store this to control spam notice
         })
         event.currentTarget.reset()
       } else {
@@ -99,6 +101,7 @@ export function ContactForm() {
             message: "Thank you! Your message has been received. We'll get back to you within 24 hours.",
             type: "success",
             details: `Submission logged: ${fallbackData.submissionId}`,
+            emailSent: false, // No email sent in fallback
           })
           event.currentTarget.reset()
         } else {
@@ -218,8 +221,8 @@ export function ContactForm() {
         </div>
       </div>
 
-      {/* Spam folder notice */}
-      {formStatus.type === "success" && (
+      {/* Spam folder notice - ONLY show when email was actually sent */}
+      {formStatus.type === "success" && formStatus.emailSent && (
         <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
           <p className="text-sm text-yellow-800">
             📬 <strong>Check your spam folder!</strong> Our confirmation email might be there. If you find it, please

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 
 // Helper function to send email with timeout
-async function sendEmailWithTimeout(emailData: any, timeoutMs = 5000) {
+async function sendEmailWithTimeout(emailData: any, timeoutMs = 8000) {
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
 
@@ -28,6 +28,31 @@ export async function POST(request: Request) {
     const body = await request.json()
     const { name, email, company, message } = body
 
+    // Check if API key is available
+    if (!process.env.RESEND_API_KEY) {
+      console.log("❌ RESEND_API_KEY not found in environment variables")
+      console.log(
+        "Available env vars:",
+        Object.keys(process.env).filter((key) => key.includes("RESEND")),
+      )
+
+      // Log submission even without API key
+      console.log("=== CONTACT FORM SUBMISSION (NO API KEY) ===")
+      console.log("Name:", name)
+      console.log("Email:", email)
+      console.log("Company:", company || "Not provided")
+      console.log("Message:", message)
+      console.log("Timestamp:", new Date().toISOString())
+      console.log("===========================================")
+
+      return NextResponse.json({
+        success: true,
+        message: "Thank you! Your message has been received. We'll get back to you within 24 hours.",
+        emailSent: false,
+        note: "API key not configured - submission logged for manual follow-up",
+      })
+    }
+
     // Basic validation
     if (!name || !email || !message) {
       return NextResponse.json({ error: "Please fill in all required fields." }, { status: 400 })
@@ -39,7 +64,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 })
     }
 
-    // Always log the submission first (so we never lose it)
+    // Always log the submission first
     console.log("=== NEW CONTACT FORM SUBMISSION ===")
     console.log("Name:", name)
     console.log("Email:", email)
@@ -52,114 +77,166 @@ export async function POST(request: Request) {
 
     // Business email HTML
     const businessEmailHtml = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #1e40af; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">
-          New Contact Form Submission
-        </h2>
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>New Mail from ${name}</title>
+      </head>
+      <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background-color: #1e40af; color: white; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
+          <h2 style="margin: 0;">New Contact Form Submission</h2>
+          <p style="margin: 5px 0 0 0; opacity: 0.9;">Received: ${new Date().toLocaleString()}</p>
+        </div>
 
         <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h3 style="color: #374151; margin-top: 0;">Contact Details:</h3>
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          ${company ? `<p><strong>Company:</strong> ${company}</p>` : ""}
-          <p><strong>Submitted:</strong> ${new Date().toLocaleString()}</p>
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold; width: 100px;">Name:</td>
+              <td style="padding: 8px 0;">${name}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold;">Email:</td>
+              <td style="padding: 8px 0;"><a href="mailto:${email}" style="color: #1e40af;">${email}</a></td>
+            </tr>
+            ${
+              company
+                ? `
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold;">Company:</td>
+              <td style="padding: 8px 0;">${company}</td>
+            </tr>
+            `
+                : ""
+            }
+          </table>
         </div>
 
         <div style="background-color: #ffffff; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
           <h3 style="color: #374151; margin-top: 0;">Message:</h3>
-          <p style="line-height: 1.6; white-space: pre-wrap;">${message}</p>
-        </div>
+          <div style="background-color: #f8f9fa; padding: 15px; border-radius: 4px; white-space: pre-wrap; line-height: 1.6;">${message}</div>
+        </div
 
-        <div style="margin-top: 20px; padding: 15px; background-color: #dbeafe; border-radius: 8px;">
-          <p style="margin: 0; font-size: 14px; color: #1e40af;">
+        <div style="margin-top: 20px; padding: 15px; background-color: #dbeafe; border-radius: 8px; text-align: center;">
+          <p style="margin: 0; font-size: 12px; color: #1e40af;">
             This email was sent from your website contact form.
           </p>
         </div>
-      </div>
+      </body>
+      </html>
     `
 
     // User confirmation email HTML
     const userEmailHtml = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #1e40af;">Thank you for your message!</h2>
-        <p>Dear ${name},</p>
-        <p>We have received your message and will get back to you within 24 hours.</p>
-        <div style="margin: 20px 0; padding: 15px; background-color: #f0f9ff; border-left: 4px solid #1e40af; border-radius: 4px;">
-          <p style="margin: 0; font-weight: bold;">Your message:</p>
-          <p style="margin: 10px 0 0 0; font-style: italic;">"${message.substring(0, 150)}${message.length > 150 ? "..." : ""}"</p>
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Thank you for contacting us</title>
+      </head>
+      <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background-color: #1e40af; color: white; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
+          <h2 style="margin: 0;">Thank you for your message!</h2>
         </div>
-        <p>Best regards,<br>Your Company Team</p>
-        <hr style="margin: 20px 0; border: none; border-top: 1px solid #e5e7eb;">
-        <p style="font-size: 12px; color: #6b7280;">
-          If you need immediate assistance, please contact us at:<br>
-          📧 zenghack1@gmail.com<br>
-          📞 (+81) 90-8521-5588
-        </p>
-      </div>
+
+        <div style="background-color: #ffffff; padding: 20px;">
+          <p>Dear ${name},</p>
+          
+          <p>Thank you for reaching out to us. We have successfully received your message and will get back to you within 24 hours.</p>
+          
+          <div style="background-color: #f0f9ff; padding: 15px; border-left: 4px solid #1e40af; border-radius: 4px; margin: 20px 0;">
+            <p style="margin: 0; font-weight: bold; color: #1e40af;">Your message:</p>
+            <p style="margin: 10px 0 0 0; font-style: italic; color: #666;">"${message.substring(0, 200)}${message.length > 200 ? "..." : ""}"</p>
+          </div>
+
+          <p>If you need immediate assistance, please don't hesitate to contact us directly:</p>
+          
+          <div style="background-color: #f8f9fa; padding: 15px; border-radius: 4px; margin: 20px 0;">
+            <p style="margin: 5px 0;"><strong>📧 Email:</strong> <a href="mailto:zenghack1@gmail.com" style="color: #1e40af;">zenghack1@gmail.com</a></p>
+            <p style="margin: 5px 0;"><strong>📞 Phone:</strong> <a href="tel:+819085215588" style="color: #1e40af;">(+81) 90-8521-5588</a></p>
+            <p style="margin: 5px 0;"><strong>💬 Telegram:</strong> +855 85 998 299 or +81 90 5492 6905</p>
+          </div>
+
+          <p>Best regards,<br><strong>Your Company Team</strong></p>
+        </div>
+
+        <div style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 8px; text-align: center;">
+          <p style="margin: 0; font-size: 12px; color: #666;">
+            This is an automated confirmation email.
+          </p>
+        </div>
+      </body>
+      </html>
     `
 
-    // Try to send emails with shorter timeout
     let emailSent = false
-    let emailError = null
+    let confirmationSent = false
 
     try {
       console.log("Attempting to send business email...")
 
       const businessEmailResponse = await sendEmailWithTimeout(
         {
-          from: "wewewe@resend.dev",
+          from: `${name}<onboarding@resend.dev>`,
           to: ["zenghack1@gmail.com"],
-          subject: `New Contact Form Submission from ${name}`,
+          subject: `New Contact: ${name} from ${company || "Website"}`,
           html: businessEmailHtml,
+          reply_to: email,
         },
-        3000,
-      ) // 3 second timeout
+        10000, // 10 second timeout
+      )
 
       if (businessEmailResponse.ok) {
-        console.log("✅ Business email sent successfully")
+        const businessResult = await businessEmailResponse.json()
+        console.log("✅ Business email sent successfully:", businessResult.id)
         emailSent = true
 
-        // Try to send confirmation email (don't wait too long for this)
+        // Try to send confirmation email
         try {
           console.log("Attempting to send confirmation email...")
           const userEmailResponse = await sendEmailWithTimeout(
             {
-              from: "onboarding@resend.dev",
+              from: "Your Company <onboarding@resend.dev>",
               to: [email],
-              subject: "Thank you for contacting us",
+              subject: "Thank you for contacting us - We'll be in touch soon!",
               html: userEmailHtml,
             },
-            2000,
-          ) // 2 second timeout
+            8000,
+          )
 
           if (userEmailResponse.ok) {
-            console.log("✅ Confirmation email sent successfully")
+            const userResult = await userEmailResponse.json()
+            console.log("✅ Confirmation email sent successfully:", userResult.id)
+            confirmationSent = true
           } else {
-            console.log("⚠️ Confirmation email failed, but continuing...")
+            const userError = await userEmailResponse.json()
+            console.log("⚠️ Confirmation email failed:", userError)
           }
         } catch (confirmationError) {
-          console.log("⚠️ Confirmation email timeout/error, but continuing...")
+          console.log("⚠️ Confirmation email timeout/error:", confirmationError)
         }
       } else {
         const errorData = await businessEmailResponse.json()
-        emailError = errorData
         console.log("❌ Business email failed:", errorData)
       }
     } catch (fetchError) {
-      emailError = fetchError
       console.log("❌ Email sending failed due to network/timeout:", fetchError)
     }
 
-    // Always return success since we logged the submission
+    // Return appropriate response
     if (emailSent) {
-      console.log("📧 EMAIL SENT SUCCESSFULLY + LOGGED")
+      console.log("📧 SUCCESS: Email sent and logged")
       return NextResponse.json({
         success: true,
-        message: "Thank you! Your message has been sent successfully. We'll get back to you soon.",
+        message: confirmationSent
+          ? "Thank you! Your message has been sent successfully. Check your email for confirmation."
+          : "Thank you! Your message has been sent successfully. We'll get back to you soon.",
         emailSent: true,
+        confirmationSent: confirmationSent,
       })
     } else {
-      console.log("📝 EMAIL FAILED BUT SUBMISSION LOGGED - WILL FOLLOW UP MANUALLY")
+      console.log("📝 PARTIAL SUCCESS: Logged but email failed")
       return NextResponse.json({
         success: true,
         message: "Thank you! Your message has been received. We'll get back to you within 24 hours.",
