@@ -153,7 +153,7 @@ export async function POST(request: Request) {
           <p>If you need immediate assistance, please don't hesitate to contact us directly:</p>
           
           <div style="background-color: #f8f9fa; padding: 15px; border-radius: 4px; margin: 20px 0;">
-            <p style="margin: 5px 0;"><strong>📧 Email:</strong> <a href="mailto:nikantrading-jp@gmail.com" style="color: #1e40af;">nikantrading-jp@gmail.com</a></p>
+            <p style="margin: 5px 0;"><strong>📧 Email:</strong> <a href="mailto:nikantrading.jp@gmail.com" style="color: #1e40af;">nikantrading.jp@gmail.com</a></p>
             <p style="margin: 5px 0;"><strong>📞 Phone:</strong> <a href="tel:+819085215588" style="color: #1e40af;">(+81) 90-8521-5588</a></p>
             <p style="margin: 5px 0;"><strong>💬 Telegram:</strong> +855 85 998 299 or +81 90 5492 6905</p>
           </div>
@@ -179,7 +179,7 @@ export async function POST(request: Request) {
       const businessEmailResponse = await sendEmailWithTimeout(
         {
           from: `NIKAN-${name}<onboarding@resend.dev>`,
-          to: ["nikantrading-jp@gmail.com"],
+          to: ["nikantrading.jp@gmail.com"],
           subject: `New Message: ${name} from ${company || "Website"} to NiKAN`,
           html: businessEmailHtml,
           reply_to: email,

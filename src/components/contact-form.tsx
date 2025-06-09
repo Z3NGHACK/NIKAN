@@ -206,8 +206,8 @@ export function ContactForm() {
         <div className="text-sm text-blue-700 space-y-1">
           <p>
             📧 Email:{" "}
-            <a href="mailto:nikantrading-jp@gmail.com" className="underline">
-              nikantrading-jp@gmail.com
+            <a href="mailto:nikantrading.jp@gmail.com" className="underline">
+              nikantrading.jp@gmail.com
             </a>
           </p>
           <p>

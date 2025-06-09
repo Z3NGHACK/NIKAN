@@ -32,7 +32,7 @@ export async function sendContactEmail(prevState: any, formData: FormData) {
     // Send email to your business email
     await resend.emails.send({
       from: "Contact Form <noreply@yourdomain.com>", // Replace with your verified domain
-      to: ["nikantrading-jp@gmail.com"], // Your business email
+      to: ["nikantrading.jp@gmail.com"], // Your business email
       subject: `New Contact Form Submission from ${name}`,
       react: ContactEmailTemplate({
         name,

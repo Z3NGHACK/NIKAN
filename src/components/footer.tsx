@@ -8,7 +8,7 @@ export function Footer() {
     {
       icon: "✉️",
       title: "Email",
-      content: "nikantrading-jp@gmail.com",
+      content: "nikantrading.jp@gmail.com",
     },
     {
       icon: "📞",
