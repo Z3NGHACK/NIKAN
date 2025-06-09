@@ -40,7 +40,7 @@ export default function ContactPage() {
                   <div className="w-6 h-6 text-blue-600 mt-1 flex items-center justify-center">✉️</div>
                   <div>
                     <h3 className="font-semibold text-slate-800 mb-1">Email</h3>
-                    <p className="text-gray-700">zenghack1@gmail.com</p>
+                    <p className="text-gray-700">nikantrading-jp@gmail.com</p>
                   </div>
                 </div>
 
