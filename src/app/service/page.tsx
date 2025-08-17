@@ -1,6 +1,6 @@
-import Image from "next/image"
-import { HeaderPage } from "@/components/header-page"
-import { Footer } from "@/components/footer"
+import Image from "next/image";
+import { HeaderPage } from "@/components/header-page";
+import { Footer } from "@/components/footer";
 
 export default function ServicePage() {
   const fromJapanServices = [
@@ -11,26 +11,51 @@ export default function ServicePage() {
     "Recycled plastic materials",
     "Used home appliances and household goods (air conditioners, refrigerators, tableware, etc.)",
     "Automotive spare parts",
-  ]
+  ];
 
   const fromSeaServices = [
     "Refined aluminum ingots",
     "Recycled plastic for circular economy",
     "Agriculture Products",
     "Custom product sourcing tailored to client requirements",
-  ]
+  ];
 
-  const serviceImages = [
-    { src: "/images/i3.jpg", alt: "Construction Machinery" },
-    { src: "/images/i2.png", alt: "Aluminum Products" },
-    { src: "/images/i4.jpg", alt: "Dinnerware" },
-    { src: "/images/i5.jpg", alt: "Automotive Parts" },
-    { src: "/images/i6.jpg", alt: "Recycling Materials" },
-    { src: "/images/i7.jpg", alt: "construction vehicle" },
-    { src: "/images/i8.jpg", alt: "Used bicycle" },
-    { src: "/images/i9.png", alt: "Aluminum Can" },
-    { src: "/images/i10.jpg", alt: "Car parts" },
-  ]
+  // Custom alt texts for each image
+  const imageAltTexts = [
+    "PET",
+    "PET (2)",
+    "PP",
+    "PP + PET",
+    "HDPE (4)",
+    "HDPE (NA)",
+    "HDPE (3)",
+    "PET",
+    "LLDPE (New)",
+    "PP (NA)",
+    "H50005 HDPE (NPW)",
+    "ABS (New)",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "PMMA",
+    "",
+    "PTE (t+)",
+    "",
+    "",
+    "tube",
+    "",
+    "PET",
+    "Machine",
+    "",
+  ];
+
+  const serviceImages = Array.from({ length: 27 }, (_, i) => ({
+    src: `/images/p${i + 1}.jpg`,
+    alt: imageAltTexts[i] || `PP`
+  }));
+
 
   return (
     <div className="min-h-screen bg-white">
@@ -38,11 +63,11 @@ export default function ServicePage() {
       {/* Hero Section */}
       <section className="py-20 bg-slate-900 relative overflow-hidden">
         <div className="absolute inset-0">
-          <Image src="/images/bg.jpeg" alt="Industrial background" fill className="object-cover opacity-60" priority />
+          <Image src="/images/b11.jpg" alt="Industrial background" fill className="object-cover opacity-60" priority />
         </div>
         <div className="relative z-10 container mx-auto px-4 text-center">
-          <div className="w-16 h-16 bg-blue-400 rounded-full mx-auto mb-6 flex items-center justify-center animate-in zoom-in-50 duration-1000">
-            <span className="text-white text-2xl">🌍</span>
+          <div className="w-12 h-12 bg-blue-400 rounded-full mx-auto mb-6 flex items-center justify-center animate-in zoom-in-50 duration-1000">
+            <span className="text-white text-5xl">🌍</span>
           </div>
           <h1 className="text-5xl md:text-6xl font-light text-white mb-8 animate-in fade-in-0 slide-in-from-bottom-6 duration-1000 delay-300">
             Global Trading Services
